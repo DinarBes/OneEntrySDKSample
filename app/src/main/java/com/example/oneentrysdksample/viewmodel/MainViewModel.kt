@@ -8,6 +8,7 @@ import com.example.oneentry.model.OneEntryLocale
 import com.example.oneentry.model.OneEntryMenu
 import com.example.oneentry.model.OneEntryPage
 import com.example.oneentry.model.ProductsResult
+import com.example.oneentrysdksample.network.BlocksProvider
 import com.example.oneentrysdksample.network.PagesProvider
 import com.example.oneentrysdksample.network.ProductsProvider
 import com.example.oneentrysdksample.network.ProjectProvider
@@ -35,12 +36,10 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _productsBlock = MutableStateFlow<ProductsResult?>(null)
     val productsBlock = _productsBlock.asStateFlow()
 
-    init {
-        getLocales()
-        getMenu()
-    }
+    private val _products = MutableStateFlow<ProductsResult?>(null)
+    val products = _products.asStateFlow()
 
-    private fun getLocales() {
+    fun getLocales() {
         viewModelScope.launch {
             try {
                 _locales.value = ProjectProvider.getActiveLocale()
@@ -75,7 +74,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
     fun getBlocks() {
         viewModelScope.launch {
             try {
-                _blocks.value = ProjectProvider.getBlocks()
+                _blocks.value = BlocksProvider.getBlocks()
             } catch (error: Exception) {
                 Log.e("Get blocks, vm error", error.toString())
             }
@@ -86,9 +85,19 @@ class MainViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             try {
                 _productsBlock.value =
-                    locales.value?.first()?.code?.let { ProductsProvider.productsBlock(marker, it) }
+                    locales.value?.first()?.code?.let { BlocksProvider.productsBlock(marker, it) }
             } catch (error: Exception) {
                 Log.e("Get block products, vm error", error.toString())
+            }
+        }
+    }
+
+    fun getProducts() {
+        viewModelScope.launch {
+            try {
+                _products.value = ProductsProvider.getProducts()
+            } catch (error: Exception) {
+                Log.e("Get products, vm error", error.toString())
             }
         }
     }

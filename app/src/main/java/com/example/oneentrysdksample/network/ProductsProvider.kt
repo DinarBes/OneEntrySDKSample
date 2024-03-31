@@ -1,20 +1,17 @@
 package com.example.oneentrysdksample.network
 
 import com.example.oneentry.model.ProductsResult
-import com.example.oneentry.network.OneEntryBlocks
-import com.example.oneentry.network.OneEntryProducts
-import com.example.oneentry.network.OneEntryProject
+import com.example.oneentry.network.ProductsService
 
 class ProductsProvider {
 
     companion object {
 
-        private val blocks = OneEntryBlocks.instance
-        val products = OneEntryProducts.instance
+        private val products = ProductsService.instance
 
-        suspend fun productsBlock(marker: String, langCode: String): ProductsResult {
+        suspend fun getProducts(): ProductsResult {
 
-            return blocks.products(marker = marker, langCode = langCode)
+            return products.products(langCode = "en_US")
         }
     }
 }

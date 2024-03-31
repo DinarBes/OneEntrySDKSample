@@ -12,3 +12,5 @@ val Pink40 = Color(0xFF7D5260)
 
 val systemGrey = Color(0xFF4C4D56)
 val orange = Color(0xFFEC722B)
+val badgeOrange = Color(0xFFFAA51A)
+val backgroundProduct = Color(0xFFF6F7F9)

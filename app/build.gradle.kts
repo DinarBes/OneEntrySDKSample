@@ -78,5 +78,5 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
 
-    implementation("com.oneentry:oneentry-kotlin:1.4.0")
+    implementation("com.oneentry:oneentry-kotlin:1.4.1")
 }

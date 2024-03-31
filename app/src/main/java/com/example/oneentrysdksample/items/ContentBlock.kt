@@ -1,27 +1,25 @@
 package com.example.oneentrysdksample.items
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import androidx.navigation.NavController
+import com.example.oneentry.model.OneEntryBlock
+import com.example.oneentry.model.OneEntryLocale
+import com.example.oneentrysdksample.Screen
 
 @Composable
 fun ContentBlock(
-    image: String,
-    action: () -> Unit
+    blocks: List<OneEntryBlock>?,
+    locale: OneEntryLocale,
+    navController: NavController
 ) {
 
-    Box(
-        modifier = Modifier
-            .padding(10.dp)
-            .clickable { action() }
-    ) {
-        AsyncImage(
-            model = image,
-            contentDescription = null
-        )
+    blocks?.forEach { block ->
+
+        if (block.attributeSetId == 9) {
+
+            ContentBlockItem(image = block.attributeValues?.get(locale.code)?.get("image")?.asImage?.first()?.downloadLink.toString()) {
+                navController.navigate(route = Screen.CatalogScreen.route + "/${block.identifier}")
+            }
+        }
     }
 }
