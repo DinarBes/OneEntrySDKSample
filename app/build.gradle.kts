@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -77,6 +78,13 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
 
-    implementation("com.oneentry:oneentry-kotlin:1.4.1")
+    implementation("com.oneentry:oneentry-kotlin:1.5.7")
+
+    implementation("androidx.window:window:1.2.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    implementation("com.google.accompanist:accompanist-flowlayout:0.23.0")
 }

@@ -1,4 +1,4 @@
-package com.example.oneentrysdksample.items
+package com.example.oneentrysdksample.items.homeItems.category
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

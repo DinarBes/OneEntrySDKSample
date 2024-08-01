@@ -1,7 +1,9 @@
 package com.example.oneentrysdksample.network
 
-import com.example.oneentry.model.OneEntryBlock
-import com.example.oneentry.model.ProductsResult
+import android.util.Log
+import com.example.oneentry.model.blocks.BlocksResult
+import com.example.oneentry.model.blocks.OneEntryBlock
+import com.example.oneentry.model.products.ProductsResult
 import com.example.oneentry.network.BlocksService
 
 class BlocksProvider private constructor() {
@@ -10,7 +12,7 @@ class BlocksProvider private constructor() {
 
         private val blocks = BlocksService.instance
 
-        suspend fun getBlocks(): List<OneEntryBlock> {
+        suspend fun getBlocks(): BlocksResult {
 
             return blocks.blocks(langCode = "en_US")
         }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">OneEntrySDKSample</string>
+    <string name="auth_text">Sign in or create account to quickly manage order</string>
 </resources>

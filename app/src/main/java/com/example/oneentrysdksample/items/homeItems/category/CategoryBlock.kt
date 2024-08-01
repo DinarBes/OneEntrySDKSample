@@ -1,4 +1,4 @@
-package com.example.oneentrysdksample.items
+package com.example.oneentrysdksample.items.homeItems.category
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -9,17 +9,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.oneentry.model.OneEntryBlock
-import com.example.oneentry.model.OneEntryLocale
+import com.example.oneentry.model.pages.OneEntryPage
+import com.example.oneentry.model.project.OneEntryLocale
 import com.example.oneentrysdksample.Screen
 
 @Composable
 fun CategoryBlock(
-    blocks: List<OneEntryBlock>?,
+    pages: List<OneEntryPage>?,
     locale: OneEntryLocale,
     navController: NavController
 ) {
-
 
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -29,12 +28,12 @@ fun CategoryBlock(
             .horizontalScroll(rememberScrollState())
     ) {
 
-        blocks?.forEach { block ->
+        pages?.forEach { page ->
 
-            if (block.attributeSetId == null) {
+            if (page.parentId == 2) {
 
-                CategoryBlockItem(name = block.localizeInfos[locale.code]?.title.toString()) {
-                    navController.navigate(route = Screen.CatalogScreen.route + "/${block.identifier}")
+                CategoryBlockItem(name = page.localizeInfos?.get(locale.code)?.title.toString()) {
+                    navController.navigate(route = Screen.CatalogScreen.route + "/${page.pageUrl}")
                 }
             }
         }

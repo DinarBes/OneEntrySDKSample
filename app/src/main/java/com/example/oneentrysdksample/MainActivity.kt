@@ -39,11 +39,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.oneentrysdksample.config.Config
 import com.example.oneentrysdksample.config.getLabelForRoute
 import com.example.oneentrysdksample.items.BottomNavigationItem
+import com.example.oneentrysdksample.items.SearchBar
 import com.example.oneentrysdksample.ui.theme.OneEntrySDKSampleTheme
 import com.example.oneentrysdksample.ui.theme.badgeOrange
 import com.example.oneentrysdksample.ui.theme.orange
 import com.example.oneentrysdksample.ui.theme.systemGrey
+import com.example.oneentrysdksample.viewmodel.CatalogViewModel
 import com.example.oneentrysdksample.viewmodel.MainViewModel
+import com.example.oneentrysdksample.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
@@ -71,6 +74,8 @@ class MainActivity : ComponentActivity() {
 
             val navController = rememberNavController()
             val mainViewModel = hiltViewModel<MainViewModel>()
+            val searchViewModel = hiltViewModel<SearchViewModel>()
+            val catalogViewModel = hiltViewModel<CatalogViewModel>()
 
             OneEntrySDKSampleTheme {
 
@@ -88,7 +93,7 @@ class MainActivity : ComponentActivity() {
                         selectedIcon = painterResource(id = R.drawable.catalog),
                         unselectedIcon = painterResource(id = R.drawable.catalog),
                         hasNews = false,
-                        route = Screen.CatalogScreen.route + "/{block_id}",
+                        route = Screen.CatalogScreen.route + "/all",
                         title = Screen.CatalogScreen.title
                     ),
                     BottomNavigationItem(
@@ -125,7 +130,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold(
                         topBar = {
-                            if (navController.currentBackStackEntryAsState().value?.destination?.route != Screen.HomeScreen.route) {
+                            if (navController.currentBackStackEntryAsState().value?.destination?.route != Screen.HomeScreen.route && navController.currentBackStackEntryAsState().value?.destination?.route != Screen.AuthScreen.route) {
                                 CenterAlignedTopAppBar(
                                     title = {
                                         Text(
@@ -147,22 +152,23 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     actions = {
-                                        Row {
-                                            IconButton(
-                                                onClick = { /*TODO*/ }
+                                        if (
+                                            navController.currentBackStackEntryAsState().value?.destination?.route != Screen.RegistrationScreen.route &&
+                                            navController.currentBackStackEntryAsState().value?.destination?.route != Screen.AuthPhoneScreen.route &&
+                                            navController.currentBackStackEntryAsState().value?.destination?.route != Screen.AuthEmailScreen.route &&
+                                            navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ForgotPasswordScreen.route &&
+                                            navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ResetPasswordScreen.route &&
+                                            navController.currentBackStackEntryAsState().value?.destination?.route != Screen.OTPVerificationScreen.route
                                             ) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Search,
-                                                    contentDescription = null
-                                                )
-                                            }
-                                            IconButton(
-                                                onClick = { /*TODO*/ }
-                                            ) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Menu,
-                                                    contentDescription = null
-                                                )
+                                            Row {
+                                                IconButton(
+                                                    onClick = { /*TODO*/ }
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Menu,
+                                                        contentDescription = null
+                                                    )
+                                                }
                                             }
                                         }
                                     },
@@ -171,40 +177,49 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         bottomBar = {
-                            NavigationBar {
-                                items.forEachIndexed { index, item ->
-                                    NavigationBarItem(
-                                        selected = selectedItemIndex == index,
-                                        onClick = {
-                                            selectedItemIndex = index
-                                            navController.navigate(route = item.route)
-                                        },
-                                        icon = {
-                                            BadgedBox(
-                                                badge = {
-                                                    if (item.badgeCount != null) {
-                                                        Badge(
-                                                            contentColor = systemGrey,
-                                                            containerColor = badgeOrange
-                                                        ) {
-                                                            Text(
-                                                                text = item.badgeCount.toString(),
-                                                                fontWeight = FontWeight.Bold
-                                                            )
+                            if (navController.currentBackStackEntryAsState().value?.destination?.route != Screen.AuthScreen.route &&
+                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.RegistrationScreen.route &&
+                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.AuthPhoneScreen.route &&
+                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.AuthEmailScreen.route &&
+                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ForgotPasswordScreen.route &&
+                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ResetPasswordScreen.route &&
+                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ResetPasswordScreen.route
+                                ) {
+                                NavigationBar {
+                                    items.forEachIndexed { index, item ->
+                                        NavigationBarItem(
+                                            selected = selectedItemIndex == index,
+                                            onClick = {
+                                                selectedItemIndex = index
+                                                navController.navigate(route = item.route)
+                                            },
+                                            icon = {
+                                                BadgedBox(
+                                                    badge = {
+                                                        if (item.badgeCount != null) {
+                                                            Badge(
+                                                                contentColor = systemGrey,
+                                                                containerColor = badgeOrange
+                                                            ) {
+                                                                Text(
+                                                                    text = item.badgeCount.toString(),
+                                                                    fontWeight = FontWeight.Bold
+                                                                )
+                                                            }
+                                                        } else if (item.hasNews) {
+                                                            Badge()
                                                         }
-                                                    } else if (item.hasNews) {
-                                                        Badge()
                                                     }
+                                                ) {
+                                                    Icon(
+                                                        painter = if (index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
+                                                        tint = if (item.route.contains(navController.currentBackStackEntryAsState().value?.destination?.route.toString())) orange else systemGrey,
+                                                        contentDescription = null
+                                                    )
                                                 }
-                                            ) {
-                                                Icon(
-                                                    painter = if (index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
-                                                    tint = if (item.route.contains(navController.currentBackStackEntryAsState().value?.destination?.route.toString())) orange else systemGrey,
-                                                    contentDescription = null
-                                                )
                                             }
-                                        }
-                                    )
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -214,7 +229,9 @@ class MainActivity : ComponentActivity() {
 
                             NavigationGraph(
                                 navHostController = navController,
-                                mainViewModel = mainViewModel
+                                mainViewModel = mainViewModel,
+                                searchViewModel = searchViewModel,
+                                catalogViewModel = catalogViewModel
                             )
                         }
                     }

@@ -32,7 +32,7 @@ fun DrawerBody(
     Spacer(modifier = Modifier.height(30.dp))
     Image(
         modifier = Modifier.padding(20.dp),
-        painter = painterResource(id = R.drawable.logo),
+        painter = painterResource(id = R.drawable.oneentry_logo),
         contentDescription = null
     )
     LazyColumn(
