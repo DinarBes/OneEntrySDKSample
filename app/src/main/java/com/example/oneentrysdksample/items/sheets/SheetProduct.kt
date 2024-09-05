@@ -92,6 +92,7 @@ fun SheetProduct(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             colors = ButtonDefaults.buttonColors(containerColor = orange),
             onClick = {
+                catalogViewModel.addProductInCart(product = product)
                 scope.launch {
                     modalBottomSheetState.hide()
                 }
@@ -257,6 +258,7 @@ fun FeaturedProducts(
                             ProductItem(
                                 product = product,
                                 locale = locale,
+                                catalogViewModel = catalogViewModel,
                                 productStatuses = productStatuses
                             ) {
 
@@ -268,6 +270,7 @@ fun FeaturedProducts(
                             ProductItem(
                                 product = product,
                                 locale = locale,
+                                catalogViewModel = catalogViewModel,
                                 productStatuses = productStatuses
                             ) {
 

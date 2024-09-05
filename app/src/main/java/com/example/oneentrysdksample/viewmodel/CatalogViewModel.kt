@@ -3,39 +3,46 @@ package com.example.oneentrysdksample.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.oneentry.model.attributes.OneEntryAttributeSet
+import com.example.oneentry.model.attributes.AttributeSet
 import com.example.oneentry.model.common.OneEntryFilter
+import com.example.oneentry.model.common.OneEntryResult
 import com.example.oneentry.model.common.OneEntrySortDirection
 import com.example.oneentry.model.pages.OneEntryPage
 import com.example.oneentry.model.products.OneEntryProduct
 import com.example.oneentry.model.products.OneEntryProductStatus
-import com.example.oneentry.model.products.ProductsResult
 import com.example.oneentrysdksample.network.AttributesProvider
 import com.example.oneentrysdksample.network.PagesProvider
 import com.example.oneentrysdksample.network.ProductsProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CatalogViewModel @Inject constructor() : ViewModel() {
 
-    private val _products = MutableStateFlow<ProductsResult?>(null)
+    private val _products = MutableStateFlow<OneEntryResult<OneEntryProduct>?>(null)
     val products = _products.asStateFlow()
 
     private val _product = MutableStateFlow<OneEntryProduct?>(null)
     val product = _product.asStateFlow()
 
-    private val _relatedProducts = MutableStateFlow<ProductsResult?>(null)
+    val favoritesProducts: MutableList<OneEntryProduct> = mutableListOf()
+
+    private val _cartProducts = MutableStateFlow<List<OneEntryProduct>?>(null)
+    val cartProducts = _cartProducts.asStateFlow()
+    private val cartProductsList: MutableList<OneEntryProduct> = mutableListOf()
+
+    private val _relatedProducts = MutableStateFlow<OneEntryResult<OneEntryProduct>?>(null)
     val relatedProducts = _relatedProducts.asStateFlow()
 
-    private val _attributeColors = MutableStateFlow<OneEntryAttributeSet?>(null)
+    private val _attributeColors = MutableStateFlow<AttributeSet?>(null)
     val attributeColors = _attributeColors.asStateFlow()
 
-    private val _attributeStickers = MutableStateFlow<OneEntryAttributeSet?>(null)
+    private val _attributeStickers = MutableStateFlow<AttributeSet?>(null)
     val attributeSticker = _attributeStickers.asStateFlow()
 
-    private val _filterProducts = MutableStateFlow<ProductsResult?>(null)
+    private val _filterProducts = MutableStateFlow<OneEntryResult<OneEntryProduct>?>(null)
     val filterProducts = _filterProducts.asStateFlow()
 
     private val _pages = MutableStateFlow<List<OneEntryPage>?>(null)
@@ -78,6 +85,32 @@ class CatalogViewModel @Inject constructor() : ViewModel() {
             } catch (error: Exception) {
                 Log.e("Get product by id, vm error", error.toString())
             }
+        }
+    }
+
+    fun addFavoritesProduct(product: OneEntryProduct) {
+        viewModelScope.launch {
+            favoritesProducts.add(product)
+        }
+    }
+
+    fun removeFavoritesProduct(product: OneEntryProduct) {
+        viewModelScope.launch {
+            favoritesProducts.remove(product)
+        }
+    }
+
+    fun addProductInCart(product: OneEntryProduct) {
+        viewModelScope.launch {
+            cartProductsList.add(product)
+            _cartProducts.value = cartProductsList
+        }
+    }
+
+    fun removeProductFromCart(product: OneEntryProduct) {
+        viewModelScope.launch {
+            cartProductsList.remove(product)
+            _cartProducts.value = cartProductsList
         }
     }
 

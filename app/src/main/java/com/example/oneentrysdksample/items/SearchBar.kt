@@ -140,6 +140,7 @@ fun SearchBar(
                             ProductItem(
                                 product = it,
                                 locale = locale,
+                                catalogViewModel = catalogViewModel,
                                 productStatuses = productStatuses
                             ) {
 

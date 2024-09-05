@@ -1,6 +1,6 @@
 package com.example.oneentrysdksample.network
 
-import com.example.oneentry.model.attributes.OneEntryAttributeSet
+import com.example.oneentry.model.attributes.AttributeSet
 import com.example.oneentry.network.AttributesService
 
 class AttributesProvider private constructor() {
@@ -13,7 +13,7 @@ class AttributesProvider private constructor() {
             setMarker: String,
             attributeMarker: String,
             langCode: String
-        ): OneEntryAttributeSet {
+        ): AttributeSet {
 
             return attributes.attribute(
                 setMarker = setMarker,

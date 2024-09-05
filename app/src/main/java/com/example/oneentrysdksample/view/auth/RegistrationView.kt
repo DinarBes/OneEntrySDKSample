@@ -1,5 +1,6 @@
 package com.example.oneentrysdksample.view.auth
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.TextField
@@ -26,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,18 +39,33 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.oneentry.network.AuthService
 import com.example.oneentrysdksample.R
+import com.example.oneentrysdksample.Screen
 import com.example.oneentrysdksample.ui.theme.authViewText
 import com.example.oneentrysdksample.ui.theme.orange
 import com.example.oneentrysdksample.ui.theme.systemGrey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun RegistrationView() {
+fun RegistrationView(
+    navController: NavController
+) {
+
+    val auth = AuthService.instance
 
     val context = LocalContext.current
 
     val password = remember { mutableStateOf("") }
     val confirmPassword = remember { mutableStateOf("") }
+
+    val phone = remember { mutableStateOf("") }
+    val mask = "+7 000 000 0000"
+    val maskNumber = '0'
+
     val email = remember { mutableStateOf("") }
     val firstName = remember { mutableStateOf("") }
     val surname = remember { mutableStateOf("") }
@@ -57,7 +76,8 @@ fun RegistrationView() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(15.dp),
+            .padding(15.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
@@ -73,7 +93,10 @@ fun RegistrationView() {
             password = password,
             confirmPassword = confirmPassword,
             firstName = firstName,
-            surname = surname
+            surname = surname,
+            phone = phone,
+            mask = mask,
+            maskNumber = maskNumber
         )
 
         Button(
@@ -93,6 +116,33 @@ fun RegistrationView() {
                     enabled.value = true
                 } else {
                     enabled.value = true
+                    CoroutineScope(Dispatchers.Main).launch {
+                        auth.signUp(
+                            marker = "email",
+                            identifier = "user",
+                            langCode = "en_US"
+                        ) {
+
+                            auth {
+                                append("login", email.value)
+                                append("password", password.value)
+                            }
+
+                            form {
+                                append("email", email.value)
+                                append("phone", maskNumber + phone.value)
+                                append("name", firstName.value)
+                                append("surname", surname.value)
+                            }
+
+                            notification {
+                                this.email = email.value
+                                this.phonePush = listOf()
+                                this.phoneSMS = phone.value
+                            }
+                        }
+                        navController.navigate(route = Screen.AuthScreen.route)
+                    }
                 }
             }
         ) {
@@ -108,6 +158,9 @@ fun RegistrationView() {
 
 @Composable
 fun InfoUserView(
+    phone: MutableState<String>,
+    mask: String,
+    maskNumber: Char,
     email: MutableState<String>,
     password: MutableState<String>,
     confirmPassword: MutableState<String>,
@@ -118,9 +171,15 @@ fun InfoUserView(
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        PhoneTextField(
+            phone = phone,
+            mask = mask,
+            maskNumber = maskNumber
+        )
         FormView(
             nameField = "Your e-mail",
-            text = email
+            text = email,
+            icon = Icons.Default.KeyboardArrowDown
         ) {
 
         }
@@ -134,13 +193,15 @@ fun InfoUserView(
         )
         FormView(
             nameField = "First name",
-            text = firstName
+            text = firstName,
+            icon = Icons.Default.KeyboardArrowDown
         ) {
 
         }
         FormView(
             nameField = "Surname",
-            text = surname
+            text = surname,
+            icon = Icons.Default.KeyboardArrowDown
         ) {
 
         }
@@ -151,6 +212,8 @@ fun InfoUserView(
 fun FormView(
     nameField: String,
     text: MutableState<String>,
+    readOnly: Boolean = false,
+    icon: ImageVector? = null,
     action: () -> Unit
 ) {
 
@@ -161,18 +224,21 @@ fun FormView(
         },
         textStyle = MaterialTheme.typography.titleSmall,
         trailingIcon = {
-            IconButton(onClick = { action() }) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = null,
-                    tint = orange
-                )
+            if (icon != null) {
+                IconButton(onClick = { action() }) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = orange
+                    )
+                }
             }
         },
+        readOnly = readOnly,
         label = {
             Text(
                 text = nameField,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400),
                 color = authViewText
             )
         },

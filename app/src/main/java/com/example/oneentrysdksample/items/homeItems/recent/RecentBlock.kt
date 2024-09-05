@@ -10,13 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.oneentry.model.blocks.BlocksResult
+import com.example.oneentry.model.blocks.OneEntryBlock
+import com.example.oneentry.model.common.OneEntryResult
 import com.example.oneentry.model.project.OneEntryLocale
 import com.example.oneentrysdksample.Screen
 
 @Composable
 fun RecentBlock(
-    blocks: BlocksResult?,
+    blocks: OneEntryResult<OneEntryBlock>?,
     locale: OneEntryLocale,
     navController: NavController
 ) {

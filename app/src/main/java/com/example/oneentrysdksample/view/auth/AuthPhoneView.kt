@@ -13,6 +13,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,38 +50,10 @@ fun AuthPhoneView(
         val mask = "+7 000 000 0000"
         val maskNumber = '0'
 
-        TextField(
-            value = phone.value,
-            onValueChange = { newValue ->
-                phone.value = newValue.take(mask.count { it == maskNumber })
-            },
-            textStyle = MaterialTheme.typography.titleSmall,
-            placeholder = {
-                Text(
-                    text = "+7",
-                    color = systemGrey,
-                    style = MaterialTheme.typography.titleSmall
-                )
-            },
-            label = {
-                Text(
-                    text = "Phone number",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = authViewText
-                )
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            keyboardActions = KeyboardActions.Default,
-            visualTransformation = PhoneVisualTransformation(mask, maskNumber),
-            singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = systemGrey,
-                backgroundColor = Color.Transparent,
-                cursorColor = Color.Gray,
-                placeholderColor = Color.Gray,
-                focusedIndicatorColor = Color.Gray
-            ),
-            modifier = Modifier.fillMaxWidth()
+        PhoneTextField(
+            phone = phone,
+            mask = mask,
+            maskNumber = maskNumber
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -91,6 +64,48 @@ fun AuthPhoneView(
             navController.navigate(route = Screen.OTPVerificationScreen.route)
         }
     }
+}
+
+@Composable
+fun PhoneTextField(
+    phone: MutableState<String>,
+    mask: String,
+    maskNumber: Char
+) {
+
+    TextField(
+        value = phone.value,
+        onValueChange = { newValue ->
+            phone.value = newValue.take(mask.count { it == maskNumber })
+        },
+        textStyle = MaterialTheme.typography.titleSmall,
+        placeholder = {
+            Text(
+                text = "+7",
+                color = systemGrey,
+                style = MaterialTheme.typography.titleSmall
+            )
+        },
+        label = {
+            Text(
+                text = "Phone number",
+                style = MaterialTheme.typography.titleSmall,
+                color = authViewText
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        keyboardActions = KeyboardActions.Default,
+        visualTransformation = PhoneVisualTransformation(mask, maskNumber),
+        singleLine = true,
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = systemGrey,
+            backgroundColor = Color.Transparent,
+            cursorColor = Color.Gray,
+            placeholderColor = Color.Gray,
+            focusedIndicatorColor = Color.Gray
+        ),
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 class PhoneVisualTransformation(val mask: String, val maskNumber: Char) : VisualTransformation {

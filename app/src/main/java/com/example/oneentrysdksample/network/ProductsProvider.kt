@@ -1,11 +1,11 @@
 package com.example.oneentrysdksample.network
 
 import com.example.oneentry.model.common.OneEntryFilter
+import com.example.oneentry.model.common.OneEntryResult
 import com.example.oneentry.model.common.OneEntrySortDirection
 import com.example.oneentry.model.products.OneEntryProduct
 import com.example.oneentry.model.products.OneEntryProductStatus
 import com.example.oneentry.model.products.OneEntrySearchProduct
-import com.example.oneentry.model.products.ProductsResult
 import com.example.oneentry.network.ProductsService
 
 class ProductsProvider {
@@ -18,7 +18,7 @@ class ProductsProvider {
             body: List<OneEntryFilter>,
             sortKey: String? = null,
             sortOrder: OneEntrySortDirection? = null
-        ): ProductsResult {
+        ): OneEntryResult<OneEntryProduct> {
 
             return products.products(
                 body = body,
@@ -31,7 +31,7 @@ class ProductsProvider {
         suspend fun getProductsPage(
             body: List<OneEntryFilter>,
             pageUrl: String
-        ): ProductsResult {
+        ): OneEntryResult<OneEntryProduct> {
 
             return products.products(
                 body = body,
@@ -45,7 +45,7 @@ class ProductsProvider {
             return products.product(id = id, langCode = "en_US")
         }
 
-        suspend fun getRelatedProducts(id: Int): ProductsResult {
+        suspend fun getRelatedProducts(id: Int): OneEntryResult<OneEntryProduct> {
 
             return products.relatedProducts(id = id, langCode = "en_US")
         }

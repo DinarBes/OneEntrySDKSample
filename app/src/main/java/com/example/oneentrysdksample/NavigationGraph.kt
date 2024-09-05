@@ -11,13 +11,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.oneentry.model.common.OneEntryConditionMarker
 import com.example.oneentry.model.common.OneEntryFilter
+import com.example.oneentrysdksample.view.CartView
 import com.example.oneentrysdksample.view.auth.AuthPhoneView
 import com.example.oneentrysdksample.view.auth.AuthView
 import com.example.oneentrysdksample.view.CatalogView
 import com.example.oneentrysdksample.view.FavoritesView
 import com.example.oneentrysdksample.view.HomeView
 import com.example.oneentrysdksample.view.LoadingView
-import com.example.oneentrysdksample.view.MyOrdersView
+import com.example.oneentrysdksample.view.OrderView
 import com.example.oneentrysdksample.view.ProfileView
 import com.example.oneentrysdksample.view.auth.AuthEmailView
 import com.example.oneentrysdksample.view.auth.ForgotPasswordView
@@ -40,7 +41,7 @@ fun NavigationGraph(
 
     NavHost(
         navController = navHostController,
-        startDestination = Screen.AuthScreen.route
+        startDestination = Screen.LoadingScreen.route
     ) {
 
         composable(route = Screen.LoadingScreen.route) {
@@ -60,7 +61,9 @@ fun NavigationGraph(
 
         composable(route = Screen.RegistrationScreen.route) {
 
-            RegistrationView()
+            RegistrationView(
+                navController = navHostController
+            )
         }
 
         composable(route = Screen.AuthPhoneScreen.route) {
@@ -149,17 +152,29 @@ fun NavigationGraph(
 
         composable(route = Screen.FavoritesScreen.route) {
 
-            FavoritesView()
+            FavoritesView(
+                catalogViewModel = catalogViewModel,
+                mainViewModel = mainViewModel
+            )
         }
 
         composable(route = Screen.MyOrdersScreen.route) {
 
-            MyOrdersView()
+            OrderView(
+                catalogViewModel = catalogViewModel,
+                mainViewModel = mainViewModel
+            )
+//            CartView(
+//                catalogViewModel = catalogViewModel,
+//                mainViewModel = mainViewModel
+//            )
         }
 
         composable(route = Screen.ProfileScreen.route) {
 
-            ProfileView()
+            ProfileView(
+                navController = navHostController
+            )
         }
     }
 }

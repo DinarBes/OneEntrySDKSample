@@ -42,9 +42,11 @@ import com.example.oneentrysdksample.ui.theme.backgroundProduct
 import com.example.oneentrysdksample.ui.theme.lightGrey
 import com.example.oneentrysdksample.ui.theme.orange
 import com.example.oneentrysdksample.ui.theme.systemGrey
+import com.example.oneentrysdksample.viewmodel.CatalogViewModel
 
 @Composable
 fun ProductItem(
+    catalogViewModel: CatalogViewModel,
     product: OneEntryProduct,
     locale: OneEntryLocale,
     productStatuses: List<OneEntryProductStatus>,
@@ -80,7 +82,10 @@ fun ProductItem(
 
                 IconButton(
                     onClick = {
-                        enabled = true
+                        enabled = !enabled
+                        if (enabled) {
+                            catalogViewModel.addFavoritesProduct(product)
+                        }
                     }
                 ) {
                     Icon(

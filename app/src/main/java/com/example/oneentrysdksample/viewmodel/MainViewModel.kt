@@ -3,16 +3,12 @@ package com.example.oneentrysdksample.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.oneentry.model.blocks.BlocksResult
 import com.example.oneentry.model.blocks.OneEntryBlock
+import com.example.oneentry.model.common.OneEntryResult
 import com.example.oneentry.model.pages.OneEntryPage
-import com.example.oneentry.model.products.OneEntryProduct
-import com.example.oneentry.model.products.ProductsResult
 import com.example.oneentry.model.project.OneEntryLocale
-import com.example.oneentry.model.project.OneEntryMenu
 import com.example.oneentrysdksample.network.BlocksProvider
 import com.example.oneentrysdksample.network.PagesProvider
-import com.example.oneentrysdksample.network.ProductsProvider
 import com.example.oneentrysdksample.network.ProjectProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +25,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
     val dataExist: Boolean
         get() = _blocks.value != null && _pages.value != null
 
-    private val _blocks = MutableStateFlow<BlocksResult?>(null)
+    private val _blocks = MutableStateFlow<OneEntryResult<OneEntryBlock>?>(null)
     val blocks = _blocks.asStateFlow()
 
     private val _pages = MutableStateFlow<List<OneEntryPage>?>(null)

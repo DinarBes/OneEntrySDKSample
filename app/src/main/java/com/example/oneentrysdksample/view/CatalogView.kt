@@ -12,12 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,16 +34,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.oneentry.model.common.OneEntrySortDirection
 import com.example.oneentry.model.products.OneEntryProduct
 import com.example.oneentry.model.products.OneEntryProductStatus
 import com.example.oneentrysdksample.R
 import com.example.oneentrysdksample.items.ProductItem
 import com.example.oneentrysdksample.items.SearchBar
+import com.example.oneentrysdksample.items.dropDown.SortedItem
 import com.example.oneentrysdksample.items.homeItems.category.CategoryBlock
 import com.example.oneentrysdksample.items.sheets.SheetFilter
 import com.example.oneentrysdksample.items.sheets.SheetProduct
-import com.example.oneentrysdksample.ui.theme.orange
 import com.example.oneentrysdksample.ui.theme.systemGrey
 import com.example.oneentrysdksample.viewmodel.CatalogViewModel
 import com.example.oneentrysdksample.viewmodel.MainViewModel
@@ -184,6 +180,7 @@ fun CatalogView(
                             ProductItem(
                                 locale = locale,
                                 product = item,
+                                catalogViewModel = catalogViewModel,
                                 productStatuses = productStatuses
                             ) {
                                 selectedItem.value = item
@@ -208,6 +205,7 @@ fun CatalogView(
                         ProductItem(
                             locale = locale,
                             product = item,
+                            catalogViewModel = catalogViewModel,
                             productStatuses = productStatuses
                         ) {
                             selectedItem.value = item
@@ -255,68 +253,6 @@ fun CatalogView(
 //                    }
 //                }
             }
-        }
-    }
-}
-
-@Composable
-fun SortedItem(
-    catalogViewModel: CatalogViewModel
-) {
-
-    var expanded by remember { mutableStateOf(false) }
-    var expandedLowHigh by remember { mutableStateOf(false) }
-    var expandedHighLow by remember { mutableStateOf(false) }
-
-    Box {
-        IconButton(onClick = { expanded = true }) {
-            Icon(
-                painter = painterResource(id = R.drawable.filter_menu),
-                contentDescription = null,
-                tint = systemGrey,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(
-                modifier = Modifier
-                    .clickable {
-                        expandedLowHigh = true
-                        expandedHighLow = false
-                        catalogViewModel.getProducts(
-                            body = listOf(),
-                            sortKey = "price",
-                            sortOrder = OneEntrySortDirection.ASK
-                        )
-                    },
-                text = "Price: Low to High",
-                color = if (expandedLowHigh) orange else systemGrey,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Divider(
-                thickness = 2.dp,
-                color = Color.Black,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                modifier = Modifier
-                    .clickable {
-                        expandedHighLow = true
-                        expandedLowHigh = false
-                        catalogViewModel.getProducts(
-                            body = listOf(),
-                            sortKey = "price",
-                            sortOrder = OneEntrySortDirection.DESK
-                        )
-                    },
-                text = "Price: High to Low",
-                color = if (expandedHighLow) orange else systemGrey,
-                style = MaterialTheme.typography.titleMedium
-            )
         }
     }
 }

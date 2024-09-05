@@ -24,9 +24,9 @@ sealed class Screen(val route: String, val title: String) {
 
     data object FavoritesScreen: Screen(route = "favorites_screen", "Favorites")
 
-    data object MyOrdersScreen: Screen(route = "my_orders_screen", "Cart")
+    data object MyOrdersScreen: Screen(route = "my_orders_screen", "Placing an order")
 
-    data object ProfileScreen: Screen(route = "profile_screen", "Contact us")
+    data object ProfileScreen: Screen(route = "profile_screen", "Profile")
 
     data object ProductScreen: Screen(route = "product_screen", "")
 }
