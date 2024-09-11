@@ -1,5 +1,6 @@
 package com.example.oneentrysdksample.view
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -35,17 +37,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.oneentrysdksample.items.DeliveryItem
 import com.example.oneentrysdksample.items.OrderProductItem
 import com.example.oneentrysdksample.items.calendar_time.CalendarDataSource
 import com.example.oneentrysdksample.items.calendar_time.DatePickerDialog
 import com.example.oneentrysdksample.items.calendar_time.TimePickerDialog
-import com.example.oneentrysdksample.ui.theme.Pink80
-import com.example.oneentrysdksample.ui.theme.Purple40
 import com.example.oneentrysdksample.ui.theme.Purple80
-import com.example.oneentrysdksample.ui.theme.PurpleGrey80
+import com.example.oneentrysdksample.ui.theme.backgroundLightGray
+import com.example.oneentrysdksample.ui.theme.lightGrey
 import com.example.oneentrysdksample.ui.theme.orange
 import com.example.oneentrysdksample.ui.theme.systemGrey
 import com.example.oneentrysdksample.view.auth.FormView
@@ -59,7 +62,9 @@ fun OrderView(
     mainViewModel: MainViewModel
 ) {
 
+    val context = LocalContext.current
     val products by catalogViewModel.cartProducts.collectAsState()
+    val delivery by mainViewModel.delivery.collectAsState()
 
     var showDialogDate by remember { mutableStateOf(false) }
     val dataSource = CalendarDataSource()
@@ -67,11 +72,9 @@ fun OrderView(
 
     var showDialogTime by remember { mutableStateOf(false) }
     val timePickerState = rememberTimePickerState(
-        initialHour = dataSource.today.atStartOfDay().hour,
-        initialMinute = dataSource.today.atStartOfDay().minute
+        initialHour = calendarUiModel.value.selectedDate.date.atStartOfDay().hour,
+        initialMinute = calendarUiModel.value.selectedDate.date.atStartOfDay().minute
     )
-
-    val enabled = remember { mutableStateOf(true) }
 
     val locale by mainViewModel.locales.collectAsState()
 
@@ -84,9 +87,11 @@ fun OrderView(
             }
         }
     }
-    var totalPrice by remember { mutableDoubleStateOf(0.0) }
+    val totalPrice = remember { mutableDoubleStateOf(0.0) }
 
-    totalPrice = finalProductPrice?.filterNotNull()?.sumOf { it.doubleValue } ?: 0.0
+    totalPrice.doubleValue = finalProductPrice?.filterNotNull()?.sumOf { it.doubleValue } ?: 0.0
+
+    val enabled by remember { derivedStateOf { totalPrice.doubleValue > 0.0 } }
 
     locale?.first()?.let {
         Column(
@@ -98,15 +103,22 @@ fun OrderView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             products?.forEach { product ->
-                finalProductPrice?.map { it1 ->
+                finalProductPrice?.mapNotNull { it1 ->
                     if (it1 != null) {
                         OrderProductItem(
+                            mainViewModel = mainViewModel,
                             product = product,
                             productPrice = it1,
                             locale = it
                         )
                     }
                 }
+            }
+            delivery?.let { it1 ->
+                DeliveryItem(
+                    product = it1,
+                    locale = it
+                )
             }
             Column(
                 modifier = Modifier
@@ -209,17 +221,20 @@ fun OrderView(
                                 showDialogTime = !showDialogTime
                             }
                         ) { Text("Cancel") }
-                    },
-                    containerColor = PurpleGrey80
+                    }
                 )
                 {
                     TimePicker(
                         state = timePickerState,
                         colors = TimePickerDefaults.colors(
-                            clockDialColor = Purple40,
-                            selectorColor = Pink80,
-                            containerColor = PurpleGrey80,
-                            clockDialUnselectedContentColor = Purple80,
+                            clockDialColor = Color.White,
+                            clockDialUnselectedContentColor = orange,
+                            selectorColor = lightGrey,
+                            containerColor = orange,
+                            periodSelectorSelectedContainerColor = systemGrey,
+                            periodSelectorUnselectedContainerColor = backgroundLightGray,
+                            periodSelectorSelectedContentColor = Color.White,
+                            timeSelectorSelectedContainerColor = orange.copy(0.5f)
                         )
                     )
                 }
@@ -245,7 +260,7 @@ fun OrderView(
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    text = "$ $totalPrice",
+                    text = "$ ${totalPrice.doubleValue + delivery?.price!!}",
                     color = systemGrey,
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
@@ -254,10 +269,10 @@ fun OrderView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.End),
-                colors = ButtonDefaults.buttonColors(containerColor = orange),
-                enabled = enabled.value,
+                colors = ButtonDefaults.buttonColors(containerColor = if (enabled) orange else orange.copy(0.7f)),
+                enabled = enabled,
                 onClick = {
-
+                    Toast.makeText(context, "Go to Pay", Toast.LENGTH_SHORT).show()
                 }
             ) {
                 Text(

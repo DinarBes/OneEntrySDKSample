@@ -15,11 +15,13 @@ import com.example.oneentrysdksample.view.CartView
 import com.example.oneentrysdksample.view.auth.AuthPhoneView
 import com.example.oneentrysdksample.view.auth.AuthView
 import com.example.oneentrysdksample.view.CatalogView
+import com.example.oneentrysdksample.view.ContactUsView
 import com.example.oneentrysdksample.view.FavoritesView
 import com.example.oneentrysdksample.view.HomeView
 import com.example.oneentrysdksample.view.LoadingView
 import com.example.oneentrysdksample.view.OrderView
 import com.example.oneentrysdksample.view.ProfileView
+import com.example.oneentrysdksample.view.SettingView
 import com.example.oneentrysdksample.view.auth.AuthEmailView
 import com.example.oneentrysdksample.view.auth.ForgotPasswordView
 import com.example.oneentrysdksample.view.auth.OTPVerificationView
@@ -170,11 +172,23 @@ fun NavigationGraph(
 //            )
         }
 
+        composable(route = Screen.SettingScreen.route) {
+
+            SettingView(
+                navController = navHostController
+            )
+        }
+
         composable(route = Screen.ProfileScreen.route) {
 
             ProfileView(
                 navController = navHostController
             )
+        }
+
+        composable(route = Screen.ContactUsScreen.route) {
+
+            ContactUsView()
         }
     }
 }

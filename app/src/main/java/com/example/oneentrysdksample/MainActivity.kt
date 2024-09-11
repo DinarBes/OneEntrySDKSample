@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -81,6 +84,7 @@ class MainActivity : ComponentActivity() {
 
                 val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
+                val badgeCount by mainViewModel.countProduct.collectAsState()
                 val items = listOf(
                     BottomNavigationItem(
                         selectedIcon = painterResource(id = R.drawable.home),
@@ -107,16 +111,16 @@ class MainActivity : ComponentActivity() {
                         selectedIcon = painterResource(id = R.drawable.cart),
                         unselectedIcon = painterResource(id = R.drawable.cart),
                         hasNews = true,
-                        badgeCount = 4,
+                        badgeCount = badgeCount,
                         route = Screen.MyOrdersScreen.route,
                         title = Screen.MyOrdersScreen.title
                     ),
                     BottomNavigationItem(
-                        selectedIcon = painterResource(id = R.drawable.profile),
-                        unselectedIcon = painterResource(id = R.drawable.profile),
+                        selectedIcon = painterResource(id = R.drawable.settings),
+                        unselectedIcon = painterResource(id = R.drawable.settings),
                         hasNews = false,
-                        route = Screen.ProfileScreen.route,
-                        title = Screen.ProfileScreen.title
+                        route = Screen.SettingScreen.route,
+                        title = Screen.SettingScreen.title
                     )
                 )
 

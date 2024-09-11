@@ -30,7 +30,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -67,7 +66,6 @@ fun CatalogView(
     val filterProducts by catalogViewModel.filterProducts.collectAsState()
 
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
@@ -177,24 +175,26 @@ fun CatalogView(
                 if (filterProducts?.items?.isEmpty() == true || filterProducts?.items == null) {
                     products?.items?.let {
                         itemsIndexed(it) { _, item ->
-                            ProductItem(
-                                locale = locale,
-                                product = item,
-                                catalogViewModel = catalogViewModel,
-                                productStatuses = productStatuses
-                            ) {
-                                selectedItem.value = item
-                                customSheetContent = {
-                                    SheetProduct(
-                                        modalBottomSheetState = modalBottomSheetState,
-                                        catalogViewModel = catalogViewModel,
-                                        product = selectedItem.value!!,
-                                        locale = locale,
-                                        productStatuses = productStatuses
-                                    )
-                                }
-                                scope.launch {
-                                    modalBottomSheetState.show()
+                            if (item.id != 55) {
+                                ProductItem(
+                                    locale = locale,
+                                    product = item,
+                                    catalogViewModel = catalogViewModel,
+                                    productStatuses = productStatuses
+                                ) {
+                                    selectedItem.value = item
+                                    customSheetContent = {
+                                        SheetProduct(
+                                            modalBottomSheetState = modalBottomSheetState,
+                                            catalogViewModel = catalogViewModel,
+                                            product = selectedItem.value!!,
+                                            locale = locale,
+                                            productStatuses = productStatuses
+                                        )
+                                    }
+                                    scope.launch {
+                                        modalBottomSheetState.show()
+                                    }
                                 }
                             }
                         }

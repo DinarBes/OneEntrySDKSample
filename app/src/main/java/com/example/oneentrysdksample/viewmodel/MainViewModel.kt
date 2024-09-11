@@ -1,14 +1,19 @@
 package com.example.oneentrysdksample.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oneentry.model.blocks.OneEntryBlock
 import com.example.oneentry.model.common.OneEntryResult
 import com.example.oneentry.model.pages.OneEntryPage
+import com.example.oneentry.model.products.OneEntryProduct
 import com.example.oneentry.model.project.OneEntryLocale
+import com.example.oneentry.network.ProductsService
 import com.example.oneentrysdksample.network.BlocksProvider
 import com.example.oneentrysdksample.network.PagesProvider
+import com.example.oneentrysdksample.network.ProductsProvider
 import com.example.oneentrysdksample.network.ProjectProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +36,15 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _pages = MutableStateFlow<List<OneEntryPage>?>(null)
     val pages = _pages.asStateFlow()
 
+    private val _delivery = MutableStateFlow<OneEntryProduct?>(null)
+    val delivery = _delivery.asStateFlow()
+
+    private val _countProducts = MutableStateFlow(0)
+    val countProduct = _countProducts.asStateFlow()
+
     init {
         getLocales()
+        getDelivery()
     }
 
     private fun getLocales() {
@@ -62,6 +74,22 @@ class MainViewModel @Inject constructor() : ViewModel() {
             } catch (error: Exception) {
                 Log.e("Get pages, vm error", error.toString())
             }
+        }
+    }
+
+    private fun getDelivery() {
+        viewModelScope.launch {
+            try {
+                _delivery.value = ProductsProvider.getProduct(id = 55)
+            } catch (error: Exception) {
+                Log.e("Get delivery, vm error", error.toString())
+            }
+        }
+    }
+
+    fun getCountProduct(countProduct: MutableIntState) {
+        viewModelScope.launch {
+            _countProducts.value = countProduct.intValue
         }
     }
 }

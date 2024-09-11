@@ -18,6 +18,8 @@ fun getLabelForRoute(route: String?): String {
         Screen.FavoritesScreen.route -> return Screen.FavoritesScreen.title
         Screen.MyOrdersScreen.route -> return Screen.MyOrdersScreen.title
         Screen.ProfileScreen.route -> return Screen.ProfileScreen.title
+        Screen.ContactUsScreen.route -> return Screen.ContactUsScreen.title
+        Screen.SettingScreen.route -> return Screen.SettingScreen.title
     }
 
     return Screen.HomeScreen.title

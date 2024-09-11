@@ -64,6 +64,7 @@ fun SheetProduct(
 ) {
 
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -95,6 +96,7 @@ fun SheetProduct(
                 catalogViewModel.addProductInCart(product = product)
                 scope.launch {
                     modalBottomSheetState.hide()
+                    Toast.makeText(context, "Product add in cart", Toast.LENGTH_SHORT).show()
                 }
             }
         ) {

@@ -180,6 +180,7 @@ fun CartProductItem(
                 DropDownCart()
 
                 Counter(
+                    mainViewModel = mainViewModel,
                     countProduct = countProduct
                 )
             }

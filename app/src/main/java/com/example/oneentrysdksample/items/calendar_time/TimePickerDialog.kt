@@ -15,10 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.oneentrysdksample.ui.theme.backgroundLightGray
+import com.example.oneentrysdksample.ui.theme.lightGrey
+import com.example.oneentrysdksample.ui.theme.systemGrey
 
 @Composable
 fun TimePickerDialog(
@@ -26,7 +28,6 @@ fun TimePickerDialog(
     onDismissRequest: () -> Unit,
     confirmButton: @Composable (() -> Unit),
     dismissButton: @Composable (() -> Unit)? = null,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
     content: @Composable () -> Unit,
 ) {
     Dialog(
@@ -43,9 +44,9 @@ fun TimePickerDialog(
                 .height(IntrinsicSize.Min)
                 .background(
                     shape = MaterialTheme.shapes.extraLarge,
-                    color = containerColor
+                    color = backgroundLightGray
                 ),
-            color = containerColor
+            color = backgroundLightGray
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
@@ -56,7 +57,8 @@ fun TimePickerDialog(
                         .fillMaxWidth()
                         .padding(bottom = 20.dp),
                     text = title,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
+                    color = systemGrey
                 )
                 content()
                 Row(

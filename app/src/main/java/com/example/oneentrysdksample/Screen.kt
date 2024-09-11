@@ -20,13 +20,17 @@ sealed class Screen(val route: String, val title: String) {
 
     data object HomeScreen: Screen(route = "home_screen", title = "Catalog")
 
-    data object CatalogScreen: Screen(route = "catalog_screen", "Catalog")
+    data object CatalogScreen: Screen(route = "catalog_screen", title = "Catalog")
 
-    data object FavoritesScreen: Screen(route = "favorites_screen", "Favorites")
+    data object FavoritesScreen: Screen(route = "favorites_screen", title = "Favorites")
 
-    data object MyOrdersScreen: Screen(route = "my_orders_screen", "Placing an order")
+    data object MyOrdersScreen: Screen(route = "my_orders_screen", title = "Placing an order")
 
-    data object ProfileScreen: Screen(route = "profile_screen", "Profile")
+    data object SettingScreen: Screen(route = "setting_screen", title = "Settings")
 
-    data object ProductScreen: Screen(route = "product_screen", "")
+    data object ProfileScreen: Screen(route = "profile_screen", title = "Profile")
+
+    data object ContactUsScreen: Screen(route = "contact_us_screen", title = "Contact Us")
+
+    data object ProductScreen: Screen(route = "product_screen", title = "")
 }

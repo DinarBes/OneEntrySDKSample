@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +24,12 @@ import androidx.compose.ui.unit.sp
 import com.example.oneentrysdksample.R
 import com.example.oneentrysdksample.ui.theme.backgroundProduct
 import com.example.oneentrysdksample.ui.theme.systemGrey
+import com.example.oneentrysdksample.viewmodel.MainViewModel
 
 @Composable
 fun Counter(
-    countProduct: MutableState<Int>
+    mainViewModel: MainViewModel,
+    countProduct: MutableIntState
 ) {
 
     Row(
@@ -49,9 +52,10 @@ fun Counter(
                 .size(15.dp)
                 .clickable(
                     onClick = {
-                        if (countProduct.value > 0) {
+                        if (countProduct.intValue > 0) {
 
-                            countProduct.value -= 1
+                            countProduct.intValue -= 1
+                            mainViewModel.getCountProduct(countProduct)
                         }
                     }
                 ),
@@ -61,7 +65,7 @@ fun Counter(
         )
 
         Text(
-            text = countProduct.value.toString(),
+            text = countProduct.intValue.toString(),
             fontWeight = FontWeight.W500,
             fontSize = 20.sp,
             color = Color.Black
@@ -76,7 +80,8 @@ fun Counter(
                 .size(15.dp)
                 .clickable(
                     onClick = {
-                        countProduct.value += 1
+                        countProduct.intValue += 1
+                        mainViewModel.getCountProduct(countProduct)
                     }
                 ),
             imageVector = Icons.Default.Add,
